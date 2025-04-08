@@ -3,6 +3,7 @@ package com.example.task_manager.service.serviceImpl;
 import com.example.task_manager.models.Task;
 import com.example.task_manager.repositories.TaskRepository;
 import com.example.task_manager.service.TaskService;
+import jdk.jshell.spi.ExecutionControl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -36,8 +37,10 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void updateTask(int id, Task updatedTask) {
-        taskRepository.findById(id).orElseThrow().setDescription(updatedTask.getDescription());
-        taskRepository.findById(id).orElseThrow().setTaskStatus(updatedTask.getTaskStatus());
-        taskRepository.findById(id).orElseThrow().setTitle(updatedTask.getTitle());
+        Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found"));
+        task.setTaskStatus(updatedTask.getTaskStatus());
+        task.setDescription(updatedTask.getDescription());
+        task.setTitle(updatedTask.getTitle());
+        taskRepository.save(task);
     }
 }
